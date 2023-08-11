@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/minor-industries/packager/pkg/packager"
 	"github.com/pkg/errors"
 	"os"
 	"os/exec"
@@ -41,12 +42,7 @@ func Build(cfg *runCfg, exe string, args ...string) error {
 	return errors.Wrap(err, "run")
 }
 
-func buildSingle(
-	name string,
-	version string,
-	arch string,
-	sharedFolder string,
-) error {
+func buildSingle(req *packager.BuildRequest) error {
 	tmp, err := os.MkdirTemp("", "")
 	if err != nil {
 		return errors.Wrap(err, "mkdirtemp")
@@ -60,7 +56,7 @@ func buildSingle(
 
 	if err := Build(&runCfg{
 		Env: []string{"GOOS=linux", "GOARCH=arm64"},
-		Dir: filepath.Join("cmd", name),
+		Dir: filepath.Join("cmd", req.Name),
 	},
 		"go",
 		"build",
@@ -70,8 +66,8 @@ func buildSingle(
 		return err
 	}
 
-	outputFile := fmt.Sprintf("%s/%s_%s_%s.tar.gz", arch, name, version, arch)
-	fullPathOutputFile := filepath.Join(sharedFolder, "builds", outputFile)
+	outputFile := fmt.Sprintf("%s/%s_%s_%s.tar.gz", req.Arch, req.Name, req.Version, req.Arch)
+	fullPathOutputFile := filepath.Join(req.Folder, "builds", outputFile)
 
 	fmt.Println("output file:", fullPathOutputFile)
 
