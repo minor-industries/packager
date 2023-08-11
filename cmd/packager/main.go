@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var opts struct {
+type Opts struct {
 	Minor        bool   `long:"minor"`
 	AllowDirty   bool   `long:"allow-dirty"`
 	New          bool   `long:"new"`
@@ -21,7 +21,9 @@ var opts struct {
 }
 
 func run() error {
-	args, err := flags.Parse(&opts)
+	opts := new(Opts)
+
+	args, err := flags.Parse(opts)
 	if err != nil {
 		return err
 	}
@@ -38,6 +40,10 @@ func run() error {
 
 	opts.SharedFolder = os.ExpandEnv(opts.SharedFolder)
 
+	return Run(opts, args)
+}
+
+func Run(opts *Opts, args []string) error {
 	dbmap, err := db.Get("localhost", 3306, "cloud_config", db.DBMapInit)
 	if err != nil {
 		return errors.Wrap(err, "get db")

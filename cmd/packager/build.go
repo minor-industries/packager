@@ -14,7 +14,7 @@ type runCfg struct {
 	Dir string
 }
 
-func Run(cfg *runCfg, exe string, args ...string) error {
+func Build(cfg *runCfg, exe string, args ...string) error {
 	if cfg == nil {
 		cfg = &runCfg{}
 	}
@@ -58,7 +58,7 @@ func buildSingle(
 		}
 	}()
 
-	if err := Run(&runCfg{
+	if err := Build(&runCfg{
 		Env: []string{"GOOS=linux", "GOARCH=arm64"},
 		Dir: filepath.Join("cmd", name),
 	},
@@ -79,7 +79,7 @@ func buildSingle(
 		return errors.New("output file exists")
 	}
 
-	if err := Run(&runCfg{Dir: tmp},
+	if err := Build(&runCfg{Dir: tmp},
 		"tar",
 		"-czv",
 		"-f", fullPathOutputFile,
