@@ -76,7 +76,7 @@ func run() error {
 		}
 		err = dbmap.SelectOne(
 			latest,
-			"select * from Package where name = :name order by major, minor, patch desc limit 1",
+			"select * from Package where name = :name order by major desc, minor desc, patch desc limit 1",
 			map[string]any{
 				"name": name,
 			},
