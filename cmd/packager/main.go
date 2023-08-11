@@ -38,8 +38,6 @@ func run() error {
 
 	opts.SharedFolder = os.ExpandEnv(opts.SharedFolder)
 
-	fmt.Println(args)
-
 	dbmap, err := db.Get("localhost", 3306, "cloud_config", db.DBMapInit)
 	if err != nil {
 		return errors.Wrap(err, "get db")
@@ -49,8 +47,9 @@ func run() error {
 	if err != nil {
 		return errors.Wrap(err, "git describe")
 	}
+	ref = strings.TrimSpace(ref)
 
-	fmt.Println(ref)
+	fmt.Println("git ref:", ref)
 
 	if strings.Contains(ref, "-dirty") && !opts.AllowDirty {
 		return errors.New("repo is dirty")
@@ -70,6 +69,7 @@ func run() error {
 	// TODO: make sure we don't have a matching git tag already for this package (via unique index?)
 
 	latest := new(db.Package)
+	fmt.Println("packages found:", count)
 	if count > 0 {
 		if opts.New {
 			return fmt.Errorf("packages exist for %s but --new specified", name)
@@ -87,12 +87,9 @@ func run() error {
 		}
 	}
 
-	fmt.Println(count)
-
 	if err != nil {
 		return errors.Wrap(err, "select")
 	}
-	fmt.Println(latest.Name)
 
 	newPkg := &db.Package{
 		ID:    uuid.New().String(),
@@ -103,7 +100,7 @@ func run() error {
 		Arch:  opts.Arch,
 		OS:    "linux",
 		GitRef: sql.NullString{
-			String: strings.TrimSpace(ref),
+			String: ref,
 			Valid:  true,
 		},
 	}

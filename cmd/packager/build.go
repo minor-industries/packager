@@ -73,6 +73,8 @@ func buildSingle(
 	outputFile := fmt.Sprintf("%s/%s_%s_%s.tar.gz", arch, name, version, arch)
 	fullPathOutputFile := filepath.Join(sharedFolder, "builds", outputFile)
 
+	fmt.Println("output file:", fullPathOutputFile)
+
 	if Exists(fullPathOutputFile) {
 		return errors.New("output file exists")
 	}
