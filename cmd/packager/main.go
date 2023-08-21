@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/jessevdk/go-flags"
+	"github.com/minor-industries/packager/pkg/build"
 	"github.com/minor-industries/packager/pkg/packager"
 	"github.com/pkg/errors"
 	"os"
@@ -30,7 +31,7 @@ func run() error {
 
 	opts.SharedFolder = os.ExpandEnv(opts.SharedFolder)
 
-	return packager.Run(name, opts, buildSingle)
+	return packager.Run(name, opts, build.BuildSingle)
 }
 
 func main() {

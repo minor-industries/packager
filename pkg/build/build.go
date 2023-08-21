@@ -1,4 +1,4 @@
-package main
+package build
 
 import (
 	"fmt"
@@ -42,7 +42,7 @@ func Build(cfg *runCfg, exe string, args ...string) error {
 	return errors.Wrap(err, "run")
 }
 
-func buildSingle(req *packager.BuildRequest) error {
+func BuildSingle(req *packager.BuildRequest) error {
 	tmp, err := os.MkdirTemp("", "")
 	if err != nil {
 		return errors.Wrap(err, "mkdirtemp")
